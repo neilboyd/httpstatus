@@ -19,10 +19,10 @@ jobs:
       DOTNET_OUTPUT: .output
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       
     - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.x
 
@@ -38,6 +38,7 @@ jobs:
     # or keep unit tests here and integration tests after
     - name: Run tests
       run: dotnet test --no-restore --verbosity normal
+      working-directory: src
       env:
         AZURE_WEBAPP_NAME: ${{ env.AZURE_WEBAPP_NAME }}
 
