@@ -10,7 +10,8 @@ namespace Teapot.Web.Tests
         [Test]
         public void Test1()
         {
-            Assert.Pass();
+            var appName = Environment.GetEnvironmentVariable("AZURE_WEBAPP_NAME");
+            Assert.That(appName, Is.EqualTo("foo"));
         }
     }
 }

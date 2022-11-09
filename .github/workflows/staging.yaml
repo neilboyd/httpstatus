@@ -35,6 +35,13 @@ jobs:
       run: dotnet build --configuration Release --no-restore --output ${{ env.DOTNET_OUTPUT }}
       working-directory: src
 
+    # TODO move this after deploy step
+    # or keep unit tests here and integration tests after
+    - name: Run tests
+      run: dotnet test --no-restore --verbosity normal
+      env:
+        AZURE_WEBAPP_NAME: ${{ env.AZURE_WEBAPP_NAME }}
+
     - name: 'Deploy to Azure WebApp'
       uses: azure/webapps-deploy@v2
       with:
