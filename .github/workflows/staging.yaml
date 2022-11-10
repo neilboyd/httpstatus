@@ -34,10 +34,8 @@ jobs:
       run: dotnet build --configuration Release --no-restore --output ${{ env.DOTNET_OUTPUT }}
       working-directory: src
 
-    # TODO move this after deploy step
-    # or keep unit tests here and integration tests after
-    - name: Run tests
-      run: dotnet test --no-restore --verbosity normal
+    - name: Unit tests
+      run: dotnet test --no-restore --verbosity normal --filter "TestCategory!=Integration"
       working-directory: src
       env:
         AZURE_WEBAPP_NAME: ${{ env.AZURE_WEBAPP_NAME }}
@@ -48,3 +46,9 @@ jobs:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_STAGING }}
         package: src/${{ env.DOTNET_OUTPUT }}
+
+    - name: Integration tests
+      run: dotnet test --no-build --verbosity normal --filter "TestCategory=Integration"
+      working-directory: src
+      env:
+        AZURE_WEBAPP_NAME: ${{ env.AZURE_WEBAPP_NAME }}
