@@ -30,15 +30,19 @@ jobs:
       run: dotnet restore
       working-directory: src
 
-    - name: Build
-      run: dotnet build --configuration Release --no-restore --output ${{ env.DOTNET_OUTPUT }}
-      working-directory: src
-
     - name: Unit tests
       run: dotnet test --no-restore --verbosity normal --filter "TestCategory!=Integration"
       working-directory: src
       env:
         AZURE_WEBAPP_NAME: ${{ env.AZURE_WEBAPP_NAME }}
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+      working-directory: src
+
+    - name: Publish
+      run: dotnet publish --configuration Release --no-build --output ${{ env.DOTNET_OUTPUT }}
+      working-directory: src
 
     - name: 'Deploy to Azure WebApp'
       uses: azure/webapps-deploy@v2
