@@ -8,13 +8,11 @@
         {
         }
 
-        [Test]
-        public void Test1([Values] HttpStatusCode httpStatusCode)
+        [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.StatusCodes))]
+        public void Test1([Values] ExtendedHttpStatusCode httpStatusCode)
         {
             var appName = Environment.GetEnvironmentVariable("AZURE_WEBAPP_NAME");
             Assert.That(appName, Is.EqualTo("httpstatus-staging"));
         }
-
-        // TODO the same test for the unofficial status codes, eg 418 I'm a teapot
     }
 }

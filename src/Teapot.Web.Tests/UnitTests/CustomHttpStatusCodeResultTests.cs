@@ -5,22 +5,20 @@ namespace Teapot.Web.Tests.UnitTests
 {
     public class CustomHttpStatusCodeResultTests
     {
-        [Test]
-        public async Task ResponseStatusCode_IsCorrect([Values] HttpStatusCode httpStatusCode)
+        [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.StatusCodes))]
+        public async Task ResponseStatusCode_IsCorrect(ExtendedHttpStatusCode httpStatusCode)
         {
             var statusCodeResult = new TeapotStatusCodeResult
             {
-                Description = httpStatusCode.ToString()
+                Description = httpStatusCode.Message
             };
             var mockContext = new Mock<ActionContext>();
 
-            var target = new CustomHttpStatusCodeResult((int)httpStatusCode, statusCodeResult);
+            var target = new CustomHttpStatusCodeResult(httpStatusCode.Code, statusCodeResult);
 
             await target.ExecuteResultAsync(mockContext.Object);
 
-            mockContext.VerifySet(x => x.HttpContext.Response.StatusCode = (int)httpStatusCode);
+            mockContext.VerifySet(x => x.HttpContext.Response.StatusCode = httpStatusCode.Code);
         }
-
-        // TODO the same test for the unofficial status codes, eg 418 I'm a teapot
     }
 }
