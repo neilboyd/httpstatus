@@ -10,7 +10,9 @@ namespace Teapot.Web.Tests.UnitTests
 {
     public class CustomHttpStatusCodeResultTests
     {
-        private Mock<HttpContext> _mockHttpContext;
+        private HttpContext _httpContext;
+        private HttpResponseFeature _httpResponseFeature;
+        private Stream _body;
         private Mock<ActionContext> _mockActionContext;
 
         [SetUp]
@@ -23,22 +25,21 @@ namespace Teapot.Web.Tests.UnitTests
             serviceProvider.Setup(x => x.GetService(typeof(ILogger))).Returns(logger.Object);
             serviceProvider.Setup(x => x.GetService(typeof(ILoggerFactory))).Returns(loggerFactory.Object);
 
-            var headerDictionary = new HeaderDictionary();
-            var httpRequest = new Mock<HttpRequest>();
-            var httpResponse = new Mock<HttpResponse>();
-            var features = new Mock<IFeatureCollection>();
-            httpRequest.SetupGet(x => x.Headers).Returns(headerDictionary);
+            var featureCollection = new FeatureCollection();
+            _httpResponseFeature= new HttpResponseFeature();
+            _body= new MemoryStream();
+            featureCollection.Set<IHttpRequestFeature>(new HttpRequestFeature());
+            featureCollection.Set<IHttpResponseFeature>(_httpResponseFeature);
+            featureCollection.Set<IHttpResponseBodyFeature>(new StreamResponseBodyFeature(_body));
 
-            _mockHttpContext = new Mock<HttpContext>();
-            _mockHttpContext.Setup(x => x.Features).Returns(features.Object);
-            _mockHttpContext.Setup(x => x.Request).Returns(httpRequest.Object);
-            _mockHttpContext.Setup(x => x.Response).Returns(httpResponse.Object);
-            _mockHttpContext.Setup(x => x.RequestServices).Returns(serviceProvider.Object);
+            _httpContext = new DefaultHttpContext(featureCollection)
+            {
+                RequestServices = serviceProvider.Object
+            };
 
             var routeData = new Mock<RouteData>();
             var actionDescriptor = new Mock<ActionDescriptor>();
-
-            _mockActionContext = new Mock<ActionContext>(_mockHttpContext.Object, routeData.Object, actionDescriptor.Object);
+            _mockActionContext = new Mock<ActionContext>(_httpContext, routeData.Object, actionDescriptor.Object);
         }
 
         [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.StatusCodes))]
@@ -53,7 +54,13 @@ namespace Teapot.Web.Tests.UnitTests
 
             await target.ExecuteResultAsync(_mockActionContext.Object);
 
-            _mockHttpContext.VerifySet(x => x.Response.StatusCode = httpStatusCode.Code);
+            Assert.That(_httpContext.Response.StatusCode, Is.EqualTo(httpStatusCode.Code));
+            Assert.That(_httpResponseFeature.ReasonPhrase, Is.EqualTo(httpStatusCode.Message));
+
+            _body.Position = 0;
+            var sr = new StreamReader(_body);
+            var body = sr.ReadToEnd();
+            Assert.That(body, Is.EqualTo(httpStatusCode.ToString()));
         }
     }
 }

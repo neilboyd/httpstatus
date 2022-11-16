@@ -9,6 +9,6 @@
         }
         public int Code { get; }
         public string Message { get; }
-        public override string ToString() => $"{Code}:{Message}";
+        public override string ToString() => $"{Code} {Message}";
     }
 }
