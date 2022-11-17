@@ -2,13 +2,13 @@
 {
     public readonly struct ExtendedHttpStatusCode
     {
-        public ExtendedHttpStatusCode(int code, string message)
+        public ExtendedHttpStatusCode(int code, string description)
         {
             Code = code;
-            Message = message;
+            Description = description;
         }
         public int Code { get; }
-        public string Message { get; }
-        public override string ToString() => $"{Code} {Message}";
+        public string Description { get; }
+        public override string ToString() => $"{Code} {Description}";
     }
 }

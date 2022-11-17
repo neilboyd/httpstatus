@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 using Teapot.Web.Models;
 
 namespace Teapot.Web.Tests.UnitTests
@@ -43,11 +44,11 @@ namespace Teapot.Web.Tests.UnitTests
         }
 
         [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.StatusCodes))]
-        public async Task ResponseStatusCode_IsCorrect(ExtendedHttpStatusCode httpStatusCode)
+        public async Task Response_Is_Correct(ExtendedHttpStatusCode httpStatusCode)
         {
             var statusCodeResult = new TeapotStatusCodeResult
             {
-                Description = httpStatusCode.Message
+                Description = httpStatusCode.Description
             };
 
             var target = new CustomHttpStatusCodeResult(httpStatusCode.Code, statusCodeResult);
@@ -55,12 +56,42 @@ namespace Teapot.Web.Tests.UnitTests
             await target.ExecuteResultAsync(_mockActionContext.Object);
 
             Assert.That(_httpContext.Response.StatusCode, Is.EqualTo(httpStatusCode.Code));
-            Assert.That(_httpResponseFeature.ReasonPhrase, Is.EqualTo(httpStatusCode.Message));
+            Assert.That(_httpContext.Response.ContentType, Is.EqualTo("text/plain"));
+            Assert.That(_httpResponseFeature.ReasonPhrase, Is.EqualTo(httpStatusCode.Description));
 
             _body.Position = 0;
             var sr = new StreamReader(_body);
             var body = sr.ReadToEnd();
             Assert.That(body, Is.EqualTo(httpStatusCode.ToString()));
+        }
+
+        [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.StatusCodes))]
+        public async Task Response_Json_Is_Correct(ExtendedHttpStatusCode httpStatusCode)
+        {
+            var statusCodeResult = new TeapotStatusCodeResult
+            {
+                Description = httpStatusCode.Description
+            };
+
+            var target = new CustomHttpStatusCodeResult(httpStatusCode.Code, statusCodeResult);
+
+            _httpContext.Request.Headers.Accept = "application/json";
+
+            await target.ExecuteResultAsync(_mockActionContext.Object);
+
+            Assert.That(_httpContext.Response.StatusCode, Is.EqualTo(httpStatusCode.Code));
+            Assert.That(_httpContext.Response.ContentType, Is.EqualTo("application/json"));
+            Assert.That(_httpResponseFeature.ReasonPhrase, Is.EqualTo(httpStatusCode.Description));
+
+            _body.Position = 0;
+            var sr = new StreamReader(_body);
+            var body = sr.ReadToEnd();
+            var serializeOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            var expectedBody = JsonSerializer.Serialize(httpStatusCode, serializeOptions);
+            Assert.That(body, Is.EqualTo(expectedBody));
         }
     }
 }
