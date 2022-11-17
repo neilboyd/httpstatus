@@ -86,11 +86,7 @@ namespace Teapot.Web.Tests.UnitTests
             _body.Position = 0;
             var sr = new StreamReader(_body);
             var body = sr.ReadToEnd();
-            var serializeOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            var expectedBody = JsonSerializer.Serialize(httpStatusCode, serializeOptions);
+            var expectedBody = JsonSerializer.Serialize(httpStatusCode);
             Assert.That(body, Is.EqualTo(expectedBody));
         }
     }
