@@ -3,7 +3,7 @@
     [Category("Integration")]
     public class IntegrationTests
     {
-        private static readonly HttpClient _httpClient = new();
+        private static readonly HttpClient _httpClient = new(new HttpClientHandler { AllowAutoRedirect = false });
         private Uri _uri;
 
         [SetUp]
