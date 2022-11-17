@@ -21,7 +21,7 @@
             using var response = await _httpClient.GetAsync(uri);
             Assert.That((int)response.StatusCode, Is.EqualTo(httpStatusCode.Code));
             var body = await response.Content.ReadAsStringAsync();
-            Assert.That(body, Is.EqualTo(httpStatusCode.ToString()));
+            Assert.That(body, Is.EqualTo(httpStatusCode.ToString()).IgnoreWhitespace());
         }
     }
 }
