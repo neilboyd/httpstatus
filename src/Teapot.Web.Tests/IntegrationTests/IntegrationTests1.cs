@@ -3,9 +3,14 @@
     [Category("Integration")]
     public class IntegrationTests
     {
+        private Uri _uri;
+
         [SetUp]
         public void Setup()
         {
+            var appName = Environment.GetEnvironmentVariable("AZURE_WEBAPP_NAME");
+            Assert.That(appName, Is.Not.Empty);
+            _uri = new Uri($"https://{appName}.azurewebsites.net");
         }
 
         [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.StatusCodes))]
