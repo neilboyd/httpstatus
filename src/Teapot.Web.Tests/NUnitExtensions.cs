@@ -5,11 +5,11 @@ namespace Teapot.Web.Tests
 {
     public static class NUnitExtensions
     {
-        private static readonly Regex _whitespaceRegex = new(@"\s+");
+        private static readonly Regex _nonAlphanumericRegex = new("[^a-zA-Z0-9]+");
 
-        private static string ReplaceSpaces(string s) => _whitespaceRegex.Replace(s, "");
+        private static string ReplaceNonAlphanumeric(string s) => _nonAlphanumericRegex.Replace(s, "").ToLowerInvariant();
 
-        public static EqualConstraint IgnoreWhitespace(this EqualConstraint constraint)
-            => constraint.Using<string>((actual, expected) => ReplaceSpaces(actual) == ReplaceSpaces(expected));
+        public static EqualConstraint OnlyAlphanumericIgnoreCase(this EqualConstraint constraint)
+            => constraint.Using<string>((actual, expected) => ReplaceNonAlphanumeric(actual) == ReplaceNonAlphanumeric(expected));
     }
 }
