@@ -43,7 +43,7 @@ public class CustomHttpStatusCodeResultTests
         _mockActionContext = new Mock<ActionContext>(_httpContext, routeData.Object, actionDescriptor.Object);
     }
 
-    [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.StatusCodes))]
+    [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.AllStatusCodes))]
     public async Task Response_Is_Correct(ExtendedHttpStatusCode httpStatusCode)
     {
         var statusCodeResult = new TeapotStatusCodeResult
@@ -65,7 +65,7 @@ public class CustomHttpStatusCodeResultTests
         Assert.That(body, Is.EqualTo(httpStatusCode.ToString()));
     }
 
-    [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.StatusCodes))]
+    [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.AllStatusCodes))]
     public async Task Response_Json_Is_Correct(ExtendedHttpStatusCode httpStatusCode)
     {
         var statusCodeResult = new TeapotStatusCodeResult
