@@ -16,6 +16,10 @@ namespace Teapot.Web.Tests
         [JsonPropertyName("description")]
         public string Description { get; }
 
+        public override bool Equals(object? obj) => obj is ExtendedHttpStatusCode code && Code == code.Code;
+
+        public override int GetHashCode() => Code.GetHashCode();
+
         public override string ToString() => $"{Code} {Description}";
     }
 }
