@@ -26,6 +26,10 @@ public class ExtendedHttpStatusCodes
                    .Select(x => new ExtendedHttpStatusCode((int)x, x.ToString())));
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesNoContent =>
-        new[] { NoContent, ResetContent, NotModified }
+        new[] { SwitchingProtocols, NoContent, ResetContent, NotModified }
+            .Select(x => new ExtendedHttpStatusCode((int)x, x.ToString()));
+
+    public static IEnumerable<ExtendedHttpStatusCode> StatusCodesServerError =>
+        new[] { Continue, Processing, EarlyHints }
             .Select(x => new ExtendedHttpStatusCode((int)x, x.ToString()));
 }
