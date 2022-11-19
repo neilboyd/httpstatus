@@ -26,26 +26,42 @@ public class ExtendedHttpStatusCodes
             new ExtendedHttpStatusCode(530, "")
         };
 
-    public static IEnumerable<ExtendedHttpStatusCode> AllStatusCodes =>
+    private static readonly HttpStatusCode[] AllStatusCodes = Enum.GetValues<HttpStatusCode>();
+
+    private static readonly HttpStatusCode[] NoContentStatusCodes = new[]
+    {
+        SwitchingProtocols, NoContent, ResetContent, NotModified
+    };
+
+    private static readonly HttpStatusCode[] DifferentContentStatusCodes = new[]
+    {
+        MultiStatus
+    };
+
+    private static readonly HttpStatusCode[] ServerErrorStatusCodes = new[]
+    {
+        Continue, Processing, EarlyHints
+    };
+
+    public static IEnumerable<ExtendedHttpStatusCode> StatusCodesAll =>
         Overrides
         .Union(CloudflareStatusCodes)
-        .Union(Enum.GetValues<HttpStatusCode>()
-                   .Select(Map));
+        .Union(AllStatusCodes.Select(Map));
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesWithContent =>
         Overrides
         .Union(CloudflareStatusCodes)
-        .Union(Enum.GetValues<HttpStatusCode>()
-                   .Where(x => !x.IsOneOf(Continue, SwitchingProtocols, Processing, EarlyHints, NoContent, ResetContent, MultiStatus, NotModified))
+        .Union(AllStatusCodes
+                   .Except(NoContentStatusCodes)
+                   .Except(ServerErrorStatusCodes)
+                   .Except(DifferentContentStatusCodes)
                    .Select(Map));
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesNoContent =>
-        new[] { SwitchingProtocols, NoContent, ResetContent, NotModified }
-            .Select(Map);
+        NoContentStatusCodes.Select(Map);
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesServerError =>
-        new[] { Continue, Processing, EarlyHints }
-            .Select(Map);
+        ServerErrorStatusCodes.Select(Map);
 
     private static ExtendedHttpStatusCode Map(HttpStatusCode httpStatusCode)
         => new((int)httpStatusCode, httpStatusCode.ToString());
