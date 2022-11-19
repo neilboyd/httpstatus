@@ -30,20 +30,23 @@ public class ExtendedHttpStatusCodes
         Overrides
         .Union(CloudflareStatusCodes)
         .Union(Enum.GetValues<HttpStatusCode>()
-                   .Select(x => new ExtendedHttpStatusCode((int)x, x.ToString())));
+                   .Select(Map));
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesWithContent =>
         Overrides
         .Union(CloudflareStatusCodes)
         .Union(Enum.GetValues<HttpStatusCode>()
                    .Where(x => !x.IsOneOf(Continue, SwitchingProtocols, Processing, EarlyHints, NoContent, ResetContent, MultiStatus, NotModified))
-                   .Select(x => new ExtendedHttpStatusCode((int)x, x.ToString())));
+                   .Select(Map));
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesNoContent =>
         new[] { SwitchingProtocols, NoContent, ResetContent, NotModified }
-            .Select(x => new ExtendedHttpStatusCode((int)x, x.ToString()));
+            .Select(Map);
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesServerError =>
         new[] { Continue, Processing, EarlyHints }
-            .Select(x => new ExtendedHttpStatusCode((int)x, x.ToString()));
+            .Select(Map);
+
+    private static ExtendedHttpStatusCode Map(HttpStatusCode httpStatusCode)
+        => new((int)httpStatusCode, httpStatusCode.ToString());
 }
