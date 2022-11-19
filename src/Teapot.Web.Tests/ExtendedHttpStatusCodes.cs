@@ -23,7 +23,7 @@ public class ExtendedHttpStatusCodes
             new ExtendedHttpStatusCode(525, "SSL Handshake Failed"),
             new ExtendedHttpStatusCode(526, "Invalid SSL Certificate"),
             new ExtendedHttpStatusCode(527, "Railgun Error"),
-            new ExtendedHttpStatusCode(530, "")
+            new ExtendedHttpStatusCode(530, "Origin DNS Error")
         };
 
     private static readonly HttpStatusCode[] AllStatusCodes = Enum.GetValues<HttpStatusCode>();
