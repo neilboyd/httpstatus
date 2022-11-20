@@ -4,7 +4,7 @@ namespace Teapot.Web.Tests;
 
 public class ExtendedHttpStatusCodes
 {
-    private static readonly ExtendedHttpStatusCode[] NonStandard = new[] {
+    private static readonly ExtendedHttpStatusCode[] NonStandardStatusCodes = new[] {
             new ExtendedHttpStatusCode(300, "Multiple Choices"),
             new ExtendedHttpStatusCode(301, "Moved Permanently"),
             new ExtendedHttpStatusCode(302, "Found"),
@@ -56,11 +56,11 @@ public class ExtendedHttpStatusCodes
     };
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesAll =>
-        NonStandard
+        NonStandardStatusCodes
         .Union(OfficialStatusCodes.Select(Map));
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesWithContent =>
-        NonStandard
+        NonStandardStatusCodes
         .Union(OfficialStatusCodes
                    .Except(NoContentStatusCodes)
                    .Except(ServerErrorStatusCodes)
