@@ -4,7 +4,7 @@ namespace Teapot.Web.Tests;
 
 public class ExtendedHttpStatusCodes
 {
-    private static readonly ExtendedHttpStatusCode[] Overrides = new[] {
+    private static readonly ExtendedHttpStatusCode[] NonStandard = new[] {
             new ExtendedHttpStatusCode(300, "Multiple Choices"),
             new ExtendedHttpStatusCode(301, "Moved Permanently"),
             new ExtendedHttpStatusCode(302, "Found"),
@@ -26,7 +26,7 @@ public class ExtendedHttpStatusCodes
             new ExtendedHttpStatusCode(530, "Origin DNS Error")
         };
 
-    private static readonly HttpStatusCode[] AllStatusCodes = Enum.GetValues<HttpStatusCode>();
+    private static readonly HttpStatusCode[] OfficialStatusCodes = Enum.GetValues<HttpStatusCode>();
 
     private static readonly HttpStatusCode[] NoContentStatusCodes = new[]
     {
@@ -44,14 +44,14 @@ public class ExtendedHttpStatusCodes
     };
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesAll =>
-        Overrides
+        NonStandard
         .Union(CloudflareStatusCodes)
-        .Union(AllStatusCodes.Select(Map));
+        .Union(OfficialStatusCodes.Select(Map));
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesWithContent =>
-        Overrides
+        NonStandard
         .Union(CloudflareStatusCodes)
-        .Union(AllStatusCodes
+        .Union(OfficialStatusCodes
                    .Except(NoContentStatusCodes)
                    .Except(ServerErrorStatusCodes)
                    .Except(DifferentContentStatusCodes)
