@@ -26,11 +26,4 @@ public class TeapotStatusCodeResultsTests
     {
         Assert.That(_target.ContainsKey((int)httpStatusCode));
     }
-
-    [Test]
-    [Ignore("do we care that some are different?")]
-    public void ReasonIsSameForStandardCode([Values] HttpStatusCode httpStatusCode)
-    {
-        Assert.That(_target[(int)httpStatusCode].Description, Is.EqualTo(httpStatusCode.ToString()).OnlyAlphanumericIgnoreCase());
-    }
 }
