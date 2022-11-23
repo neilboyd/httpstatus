@@ -27,12 +27,12 @@ public class ExtendedHttpStatusCodes
     };
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesAll =>
-        All.Select(x => new ExtendedHttpStatusCode(x.Key, x.Value.Description, x.Value.Body));
+        All.Select(Map);
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesWithContent =>
         All
         .Where(x => !x.Value.ExcludeBody)
-        .Select(x => new ExtendedHttpStatusCode(x.Key, x.Value.Description, x.Value.Body));
+        .Select(Map);
 
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesNoContent =>
         NoContentStatusCodes.Select(Map);
@@ -40,9 +40,14 @@ public class ExtendedHttpStatusCodes
     public static IEnumerable<ExtendedHttpStatusCode> StatusCodesServerError =>
         ServerErrorStatusCodes.Select(Map);
 
-    private static ExtendedHttpStatusCode Map(HttpStatusCode httpStatusCode)
+    private static ExtendedHttpStatusCode Map(HttpStatusCode code)
     {
-        var key = (int)httpStatusCode;
+        var key = (int)code;
         return new(key, All[key].Description, All[key].Body);
+    }
+
+    private static ExtendedHttpStatusCode Map(KeyValuePair<int, TeapotStatusCodeResult> code)
+    {
+        return new ExtendedHttpStatusCode(code.Key, code.Value.Description, code.Value.Body);
     }
 }
