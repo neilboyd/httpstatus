@@ -2,7 +2,7 @@ name: "Build and Deploy to staging"
 
 on:
   pull_request:
-    branches: [main, add-tests]
+    branches: [main]
       
 jobs:
   build:
