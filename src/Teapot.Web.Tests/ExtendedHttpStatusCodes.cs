@@ -6,7 +6,7 @@ namespace Teapot.Web.Tests;
 
 public class ExtendedHttpStatusCodes
 {
-    private static readonly TeapotStatusCodeResults All = new (
+    private static readonly TeapotStatusCodeResults All = new(
             new AmazonStatusCodeResults(),
             new CloudflareStatusCodeResults(),
             new EsriStatusCodeResults(),
@@ -41,5 +41,8 @@ public class ExtendedHttpStatusCodes
         ServerErrorStatusCodes.Select(Map);
 
     private static ExtendedHttpStatusCode Map(HttpStatusCode httpStatusCode)
-        => new((int)httpStatusCode, httpStatusCode.ToString(), null);
+    {
+        var key = (int)httpStatusCode;
+        return new(key, All[key].Description, All[key].Body);
+    }
 }

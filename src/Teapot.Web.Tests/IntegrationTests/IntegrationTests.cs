@@ -21,7 +21,7 @@ public class IntegrationTests
         using var response = await _httpClient.GetAsync(uri);
         Assert.That((int)response.StatusCode, Is.EqualTo(httpStatusCode.Code));
         var body = await response.Content.ReadAsStringAsync();
-        Assert.That(body, Is.EqualTo(httpStatusCode.Body).OnlyAlphanumericIgnoreCase());
+        Assert.That(body, Is.EqualTo(httpStatusCode.Body));
     }
 
     [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.StatusCodesNoContent))]
