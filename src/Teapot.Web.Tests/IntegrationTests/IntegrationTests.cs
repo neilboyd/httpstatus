@@ -2,7 +2,6 @@
 
 namespace Teapot.Web.Tests.IntegrationTests;
 
-[Category("Integration")]
 public class IntegrationTests
 {
     private static HttpClient _httpClient;

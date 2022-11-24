@@ -35,7 +35,7 @@ jobs:
       working-directory: src
 
     - name: Unit tests
-      run: dotnet test --configuration Release --no-build --verbosity normal --filter "TestCategory!=Integration"
+      run: dotnet test --configuration Release --no-build --verbosity normal
       working-directory: src
       env:
         AZURE_WEBAPP_NAME: ${{ env.AZURE_WEBAPP_NAME }}
@@ -50,9 +50,3 @@ jobs:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_STAGING }}
         package: src/${{ env.DOTNET_OUTPUT }}
-
-    - name: Integration tests
-      run: dotnet test --configuration Release --no-build --verbosity normal --filter "TestCategory=Integration"
-      working-directory: src
-      env:
-        AZURE_WEBAPP_NAME: ${{ env.AZURE_WEBAPP_NAME }}
