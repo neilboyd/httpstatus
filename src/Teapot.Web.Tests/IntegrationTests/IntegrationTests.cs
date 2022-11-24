@@ -32,14 +32,4 @@ public class IntegrationTests
         var body = await response.Content.ReadAsStringAsync();
         Assert.That(body, Is.Empty);
     }
-
-    [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.StatusCodesServerError))]
-    public async Task ResponseServerError([Values] ExtendedHttpStatusCode httpStatusCode)
-    {
-        var uri = $"/{httpStatusCode.Code}";
-        using var response = await _httpClient.GetAsync(uri);
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadGateway));
-        var body = await response.Content.ReadAsStringAsync();
-        Assert.That(body, Is.Not.Empty);
-    }
 }
