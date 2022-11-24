@@ -4,14 +4,7 @@ namespace Teapot.Web.Tests.IntegrationTests;
 
 public class IntegrationTests
 {
-    private static HttpClient _httpClient;
-
-    [SetUp]
-    public void Setup()
-    {
-        var webAppFactory = new WebApplicationFactory<Program>();
-        _httpClient = webAppFactory.CreateDefaultClient();
-    }
+    private static readonly HttpClient _httpClient = new WebApplicationFactory<Program>().CreateDefaultClient();
 
     [TestCaseSource(typeof(ExtendedHttpStatusCodes), nameof(ExtendedHttpStatusCodes.StatusCodesWithContent))]
     public async Task ResponseWithContent([Values] ExtendedHttpStatusCode httpStatusCode)
