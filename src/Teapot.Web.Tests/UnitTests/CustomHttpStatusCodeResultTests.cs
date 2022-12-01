@@ -102,7 +102,7 @@ public class CustomHttpStatusCodeResultTests
         };
 
         _httpContext.Response.Headers["Content-Type"] = "text/plain";
-        _httpContext.Response.Headers["Content-Length"] = testCase.Description.Length.ToString();
+        _httpContext.Response.Headers["Content-Length"] = "42";
 
         var target = new CustomHttpStatusCodeResult(testCase.Code, statusCodeResult);
 
