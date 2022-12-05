@@ -93,7 +93,7 @@ public class CustomHttpStatusCodeResultTests
     }
 
     [TestCaseSource(typeof(TestCases), nameof(TestCases.StatusCodesNoContent))]
-    public async Task No_Body(TestCase testCase)
+    public async Task Response_No_Content(TestCase testCase)
     {
         var statusCodeResult = new TeapotStatusCodeResult
         {
