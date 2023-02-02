@@ -25,7 +25,7 @@ public class StatusController : Controller
     {
         var statusData = _statusCodes.ContainsKey(statusCode)
             ? _statusCodes[statusCode]
-            : new TeapotStatusCodeResult { Description = $"{statusCode} Unknown Code" };
+            : new TeapotStatusCodeResult { Description = "Unknown Code" };
 
         await DoSleep(sleep);
 
