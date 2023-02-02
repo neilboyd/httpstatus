@@ -21,6 +21,11 @@
     To get a JSON response back, you need to ensure that the Accept header contains 'application/json'.
     Then we'll JSON encode the response and send the Content-Type header accordingly.
 </p>
+
+<p>
+    To get a random response back, use the `random/{range}` endpoint,
+    for example
+    @Html.RouteLink("httpstat.us/random/200,201,500-504", "Random", new {statusCodes = "200,201,500-504"}).
 </p>
 
 <p>
