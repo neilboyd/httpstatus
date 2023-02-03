@@ -32,6 +32,12 @@ public class StatusController : Controller
         return new CustomHttpStatusCodeResult(statusCode, statusData);
     }
 
+    [Route("Random/{statusCodes?}", Name = "Random")]
+    public IActionResult Random(string statusCodes)
+    {
+        return new OkObjectResult($"Random: {statusCodes}");
+    }
+
     private static async Task DoSleep(int? sleep)
     {
         var sleepData = Math.Clamp(sleep ?? 0, SLEEP_MIN, SLEEP_MAX);
