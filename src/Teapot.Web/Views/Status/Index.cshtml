@@ -25,7 +25,8 @@
 <p>
     To get a random response back, use the <code class="inline">random/{range}</code> endpoint,
     for example
-    @Html.RouteLink("httpstat.us/random/200,201,500-504", "Random", new {statusCodes = "200,201,500-504"}).
+    @Html.RouteLink("httpstat.us/random/200,201,500-504", "Random", new {range = "200,201,500-504"}).
+    You can duplicate ranges in order to increase their probability.
 </p>
 
 <p>

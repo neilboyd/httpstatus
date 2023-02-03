@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Teapot.Web.Models;
 
 namespace Teapot.Web.Controllers;
@@ -21,7 +22,7 @@ public class StatusController : Controller
     public IActionResult Index() => View(_statusCodes);
 
     [Route("{statusCode:int}", Name = "StatusCode")]
-    public async Task<IActionResult> StatusCode(int statusCode, int? sleep)
+    public async Task<IActionResult> StatusCode(int statusCode, int? sleep = 0)
     {
         var statusData = _statusCodes.ContainsKey(statusCode)
             ? _statusCodes[statusCode]
@@ -32,10 +33,15 @@ public class StatusController : Controller
         return new CustomHttpStatusCodeResult(statusCode, statusData);
     }
 
-    [Route("Random/{statusCodes?}", Name = "Random")]
-    public IActionResult Random(string statusCodes)
+    [Route("Random/{range?}", Name = "Random")]
+    public async Task<IActionResult> Random(string range = "100-599")
     {
-        return new OkObjectResult($"Random: {statusCodes}");
+        if (RandomSequenceGenerator.TryParse(range, out var random))
+        {
+            var statusCode = random.Next;
+            return await StatusCode(statusCode);
+        }
+        return new StatusCodeResult((int)HttpStatusCode.BadRequest);
     }
 
     private static async Task DoSleep(int? sleep)
