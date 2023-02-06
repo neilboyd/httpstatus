@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Net;
-using System.Threading.Tasks;
 using Teapot.Web.Models;
 
 namespace Teapot.Web.Controllers;
@@ -30,12 +28,12 @@ public class StatusController : Controller {
     }
 
     [Route("Random/{range?}", Name = "Random")]
-    public async Task<IActionResult> Random(string range = "100-599")
+    public IActionResult Random(string range = "100-599")
     {
         if (RandomSequenceGenerator.TryParse(range, out var random))
         {
             var statusCode = random.Next;
-            return await StatusCode(statusCode);
+            return StatusCode(statusCode);
         }
         return new StatusCodeResult((int)HttpStatusCode.BadRequest);
     }
