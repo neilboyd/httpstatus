@@ -8,9 +8,12 @@ public class StatusController : Controller {
     public const string SLEEP_HEADER = "X-HttpStatus-Sleep";
 
     private readonly TeapotStatusCodeResults _statusCodes;
+    private readonly IRandomSequenceGenerator _randomSequenceGenerator;
 
-    public StatusController(TeapotStatusCodeResults statusCodes) {
+    public StatusController(TeapotStatusCodeResults statusCodes, IRandomSequenceGenerator randomSequenceGenerator)
+    {
         _statusCodes = statusCodes;
+        _randomSequenceGenerator = randomSequenceGenerator;
     }
 
     [Route("")]
@@ -31,7 +34,7 @@ public class StatusController : Controller {
     [Route("Random/{range?}", Name = "Random")]
     public IActionResult Random(string range = "100-599")
     {
-        if (RandomSequenceGenerator.TryParse(range, out var random))
+        if (_randomSequenceGenerator.TryParse(range, out var random))
         {
             var statusCode = random.Next;
             return StatusCode(statusCode, null);
