@@ -20,7 +20,6 @@ internal class RandomSequenceGenerator : IRandomSequenceGenerator
                                    .Select(x => x.Split('-'))
                                    .Select(p => new { First = int.Parse(p.First()), Last = int.Parse(p.Last()) })
                                    .SelectMany(x => Enumerable.Range(x.First, x.Last - x.First + 1))
-                                   .OrderBy(z => z)
                                    .ToArray()
             };
             return true;
