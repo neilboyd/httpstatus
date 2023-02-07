@@ -32,12 +32,13 @@ public class StatusController : Controller {
     }
 
     [Route("Random/{range?}", Name = "Random")]
-    public IActionResult Random(string range = "100-599")
+    [Route("Random/{range?}/{*wildcard}", Name = "RandomWildcard")]
+    public IActionResult Random(string range = "100-599", int? sleep = null)
     {
         if (_randomSequenceGenerator.TryParse(range, out var random))
         {
             var statusCode = random.Next;
-            return StatusCode(statusCode, null);
+            return StatusCode(statusCode, sleep);
         }
         return new StatusCodeResult((int)HttpStatusCode.BadRequest);
     }
