@@ -2,8 +2,7 @@ name: Build and Deploy to staging
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 env:
   AZURE_WEBAPP_NAME: httpstatus-staging

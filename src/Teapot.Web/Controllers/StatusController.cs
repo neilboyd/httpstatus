@@ -4,14 +4,12 @@ using Teapot.Web.Models;
 
 namespace Teapot.Web.Controllers;
 
-public class StatusController : Controller
-{
+public class StatusController : Controller {
     public const string SLEEP_HEADER = "X-HttpStatus-Sleep";
 
     private readonly TeapotStatusCodeResults _statusCodes;
 
-    public StatusController(TeapotStatusCodeResults statusCodes)
-    {
+    public StatusController(TeapotStatusCodeResults statusCodes) {
         _statusCodes = statusCodes;
     }
 
@@ -19,11 +17,11 @@ public class StatusController : Controller
     public IActionResult Index() => View(_statusCodes);
 
     [Route("{statusCode:int}", Name = "StatusCode")]
-    public IActionResult StatusCode(int statusCode, int? sleep = 0)
-    {
+    [Route("{statusCode:int}/{*wildcard}", Name = "StatusCodeWildcard")]
+    public IActionResult StatusCode(int statusCode, int? sleep) {
         var statusData = _statusCodes.ContainsKey(statusCode)
             ? _statusCodes[statusCode]
-            : new TeapotStatusCodeResult { Description = "Unknown Code" };
+            : new TeapotStatusCodeResult { Description = $"{statusCode} Unknown Code" };
 
         sleep ??= FindSleepInHeader();
 
@@ -36,18 +34,15 @@ public class StatusController : Controller
         if (RandomSequenceGenerator.TryParse(range, out var random))
         {
             var statusCode = random.Next;
-            return StatusCode(statusCode);
+            return StatusCode(statusCode, null);
         }
         return new StatusCodeResult((int)HttpStatusCode.BadRequest);
     }
 
-    private int? FindSleepInHeader()
-    {
-        if (HttpContext.Request.Headers.TryGetValue(SLEEP_HEADER, out var sleepHeader) && sleepHeader.Count == 1 && sleepHeader[0] is not null)
-        {
+    private int? FindSleepInHeader() {
+        if (HttpContext.Request.Headers.TryGetValue(SLEEP_HEADER, out var sleepHeader) && sleepHeader.Count == 1 && sleepHeader[0] is not null) {
             var val = sleepHeader[0];
-            if (int.TryParse(val, out var sleepFromHeader))
-            {
+            if (int.TryParse(val, out var sleepFromHeader)) {
                 return sleepFromHeader;
             }
         }

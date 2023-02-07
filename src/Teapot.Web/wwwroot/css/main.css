@@ -1,7 +1,7 @@
 /* ------------------------------ *
  * Reset Reloaded (by Eric Meyer) *
  * ------------------------------ */
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
     margin: 0;
     padding: 0;
     border: 0;
@@ -19,8 +19,7 @@ body {
     background: white;
 }
 
-ol,
-ul {
+ol, ul {
     list-style: none;
 }
 
@@ -29,23 +28,17 @@ table {
     border-spacing: 0;
 }
 
-caption,
-th,
-td {
+caption, th, td {
     text-align: left;
     font-weight: normal;
 }
 
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
+blockquote:before, blockquote:after, q:before, q:after {
     content: "";
 }
 
-blockquote,
-q {
-    quotes: "" "";
+blockquote, q {
+    quotes: """";
 }
 
 
@@ -64,16 +57,11 @@ body {
     color: #111;
 }
 
-section,
-header,
-article,
-footer {
+section, header, article, footer {
     display: block;
 }
 
-h1,
-h2,
-h3 {
+h1, h2, h3 {
     font-family: Georgia, Times, serif;
 }
 
@@ -106,21 +94,21 @@ strong {
     margin-left: 30px;
 }
 
-#view dl dt {
-    float: left;
-    clear: left;
-}
+    #view dl dt {
+        float: left;
+        clear: left;
+    }
 
-#view dl dd {
-    float: left;
-    margin-left: 10px;
-}
+    #view dl dd {
+        float: left;
+        margin-left: 10px;
+    }
 
-#view dl dd.note {
-    clear: left;
-    margin-left: 0;
-    color: #999;
-}
+        #view dl dd.note {
+            clear: left;
+            margin-left: 0;
+            color: #999;
+        }
 
 code {
     display: block;
@@ -143,11 +131,11 @@ footer {
     text-transform: uppercase;
 }
 
-footer a:link,
-footer a:active,
-footer a:visited {
-    color: #777;
-}
+    footer a:link,
+    footer a:active,
+    footer a:visited {
+        color: #777;
+    }
 
 p.img {
     text-align: center;
