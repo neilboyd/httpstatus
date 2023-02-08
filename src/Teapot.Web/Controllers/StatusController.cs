@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Net;
 using Teapot.Web.Models;
 
@@ -6,6 +7,7 @@ namespace Teapot.Web.Controllers;
 
 public class StatusController : Controller {
     public const string SLEEP_HEADER = "X-HttpStatus-Sleep";
+    public const string CUSTOM_RESPONSE_HEADER_PREFIX = "X-HttpStatus-Response-";
 
     private readonly TeapotStatusCodeResults _statusCodes;
     private readonly IRandomSequenceGenerator _randomSequenceGenerator;
@@ -28,7 +30,11 @@ public class StatusController : Controller {
 
         sleep ??= FindSleepInHeader();
 
-        return new CustomHttpStatusCodeResult(statusCode, statusData, sleep);
+        var customResponseHeaders = HttpContext.Request.Headers
+            .Where(header => header.Key.StartsWith(CUSTOM_RESPONSE_HEADER_PREFIX))
+            .ToDictionary(header => header.Key.Replace(CUSTOM_RESPONSE_HEADER_PREFIX, string.Empty), header => header.Value);
+
+        return new CustomHttpStatusCodeResult(statusCode, statusData, sleep, customResponseHeaders);
     }
 
     [Route("Random/{range?}", Name = "Random")]
