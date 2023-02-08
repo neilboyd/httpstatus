@@ -7,7 +7,7 @@ namespace Teapot.Web;
 internal class RandomSequenceGenerator : IRandomSequenceGenerator
 {
     private readonly Random _random = new();
-    private int[] Range { get; set; } = Array.Empty<int>();
+    internal int[] Range { get; private set; } = Array.Empty<int>();
 
     public bool TryParse(string range, [NotNullWhen(true)] out IRandomSequenceGenerator? generator)
     {
