@@ -1,9 +1,5 @@
 name: Build and deploy
 
-env:
-  AZURE_WEBAPP_NAME: httpstatus-prod
-  IMAGE_NAME: ${{ github.repository }}
-
 on:
   push:
     branches:
@@ -31,6 +27,16 @@ jobs:
       - name: Build and Deploy
         uses: "./.github/templates/build-deploy"
         with:
+          GitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          GitHubRegistryUrl: ${{ secrets.GH_REGISTRY_URL }}
+          AzureRegistryUrl: ${{ secrets.AZURE_REGISTRY_URL }}
+          AzureRegistryUsername: ${{ secrets.AZURE_REGISTRY_USERNAME }}
+          AzureRegistryPassword: ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+          AzureClientId: ${{ secrets.AZURE_CLIENT_ID }}
+          AzureTenantId: ${{ secrets.AZURE_TENANT_ID }}
+          AzureSubscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AzureWebAppName: httpstatus-prod
+          imageName: ${{ github.repository }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
