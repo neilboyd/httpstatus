@@ -1,0 +1,55 @@
+name: Build
+
+inputs:
+  GitHubToken:
+    required: true
+  GitHubRegistryUrl:
+    required: true
+  AzureRegistryUrl:
+    required: true
+  AzureRegistryUsername:
+    required: true
+  AzureRegistryPassword:
+    required: true
+  imageName:
+    required: true
+  tags:
+    required: true
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ inputs.GitHubRegistryUrl }}/${{ inputs.imageName }},${{ inputs.AzureRegistryUrl }}/${{ inputs.imageName }}
+        tags: ${{ inputs.tags }}
+
+    - name: ACR authentication
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ inputs.AzureRegistryUrl }}
+        username: ${{ inputs.AzureRegistryUsername }}
+        password: ${{ inputs.AzureRegistryPassword }}
+
+    - name: GPR authentication
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ inputs.GitHubRegistryUrl }}
+        username: ${{ github.actor }}
+        password: ${{ inputs.GitHubToken }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and push
+      uses: docker/build-push-action@v3
+      with:
+        context: src
+        file: src/Teapot.Web/Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        platforms: linux/amd64

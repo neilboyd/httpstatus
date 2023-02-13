@@ -1,9 +1,5 @@
 name: Build and deploy
 
-env:
-  AZURE_WEBAPP_NAME: httpstatus-prod
-  IMAGE_NAME: ${{ github.repository }}
-
 on:
   push:
     branches:
@@ -27,11 +23,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
+      - name: Build
+        uses: "./.github/templates/build"
         with:
-          images: ${{ secrets.GH_REGISTRY_URL }}/${{ env.IMAGE_NAME }},${{ secrets.AZURE_REGISTRY_URL }}/${{ env.IMAGE_NAME }}
+          GitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          GitHubRegistryUrl: ${{ secrets.GH_REGISTRY_URL }}
+          AzureRegistryUrl: ${{ secrets.AZURE_REGISTRY_URL }}
+          AzureRegistryUsername: ${{ secrets.AZURE_REGISTRY_USERNAME }}
+          AzureRegistryPassword: ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+          imageName: ${{ github.repository }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -39,51 +39,24 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=sha,format=long,prefix=
 
-      - name: ACR authentication
-        uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.AZURE_REGISTRY_URL }}
-          username: ${{ secrets.AZURE_REGISTRY_USERNAME }}
-          password: ${{ secrets.AZURE_REGISTRY_PASSWORD }}
-
-      - name: GPR authentication
-        uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.GH_REGISTRY_URL }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: src
-          file: src/Teapot.Web/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          # platforms: linux/amd64,linux/arm64
-          platforms: linux/amd64
-
   deploy-azure:
     runs-on: ubuntu-latest
-    name: Deploy to Azure
+    name: Deploy to Azure WebApp 1
     environment:
       name: production
-    needs: [build-images]
+    needs:
+      - build-images
 
     steps:
-      - name: Azure authentication
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - uses: actions/checkout@v3
 
-      - name: Deploy to Azure WebApp
-        uses: azure/webapps-deploy@v2
+      - name: Deploy to Azure WebApp 2
+        uses: "./.github/templates/deploy"
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          images: ${{ secrets.AZURE_REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          AzureRegistryUrl: ${{ secrets.AZURE_REGISTRY_URL }}
+          AzureClientId: ${{ secrets.AZURE_CLIENT_ID }}
+          AzureTenantId: ${{ secrets.AZURE_TENANT_ID }}
+          AzureSubscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AzureWebAppName: httpstatus-prod
+          imageName: ${{ github.repository }}
+          tag: ${{ github.sha }}
