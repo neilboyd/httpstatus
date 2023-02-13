@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build
 
 inputs:
   GitHubToken:
@@ -11,17 +11,9 @@ inputs:
     required: true
   AzureRegistryPassword:
     required: true
-  AzureClientId:
-    required: true
-  AzureTenantId:
-    required: true
-  AzureSubscriptionId:
-    required: true
-  AzureWebAppName:
-    required: true
   imageName:
     required: true
-  tags: 
+  tags:
     required: true
 
 runs:
@@ -61,24 +53,3 @@ runs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         platforms: linux/amd64
-
-deploy-azure:
-  runs-on: ubuntu-latest
-  name: Deploy to Azure
-  environment:
-    name: production
-  needs: [build-images]
-
-  steps:
-    - name: Azure authentication
-      uses: azure/login@v1
-      with:
-        client-id: ${{ inputs.AzureClientId }}
-        tenant-id: ${{ inputs.AzureTenantId }}
-        subscription-id: ${{ inputs.AzureSubscriptionId }}
-
-    - name: Deploy to Azure WebApp
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ inputs.AzureWebAppName }}
-        images: ${{ inputs.AzureRegistryUrl }}/${{ inputs.imageName }}:${{ github.sha }}

@@ -1,0 +1,34 @@
+name: Deploy to Azure WebApp 3
+
+inputs:
+  AzureRegistryUrl:
+    required: true
+  AzureClientId:
+    required: true
+  AzureTenantId:
+    required: true
+  AzureSubscriptionId:
+    required: true
+  AzureWebAppName:
+    required: true
+  imageName:
+    required: true
+  tag:
+    required: true
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Azure authentication
+      uses: azure/login@v1
+      with:
+        client-id: ${{ inputs.AzureClientId }}
+        tenant-id: ${{ inputs.AzureTenantId }}
+        subscription-id: ${{ inputs.AzureSubscriptionId }}
+
+    - name: Deploy to Azure WebApp 4
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ inputs.AzureWebAppName }}
+        images: ${{ inputs.AzureRegistryUrl }}/${{ inputs.imageName }}:${{ inputs.tag }}
